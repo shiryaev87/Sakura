@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>Мои брони — Sakura</title>
+</head>
+<body>
+  <h1>Мои брони</h1>
+  <p><a href="/">← Назад к схеме участков</a> · <a href="/logout">Выйти</a></p>
+
+  {{if .Plots}}
+    <ul>
+    {{range .Plots}}
+      <li>
+        Участок №{{.Number}} — {{.Area}} соток — {{.Price}} руб — статус: {{.Status}}
+      </li>
+    {{end}}
+    </ul>
+  {{else}}
+    <p>У вас пока нет забронированных участков.</p>
+  {{end}}
+</body>
+</html>

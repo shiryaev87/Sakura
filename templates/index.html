@@ -1,0 +1,44 @@
+<html>
+<head>
+  <title>Sakura — участки</title>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <style>
+    .status-available { fill: #4ade80; }
+    .status-reserved  { fill: #fbbf24; }
+    .status-sold      { fill: #f87171; }
+    polygon { stroke: #333; stroke-width: 2; cursor: pointer; }
+    text { font-family: sans-serif; font-size: 12px; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+  <h1>Схема участков</h1>
+
+{{if .LoggedIn}}
+  <p>Вы вошли как пользователь №{{.UserID}} · <a href ="/dashboard"> Мои брони</a> · <a href="/logout">Выйти</a></p>
+{{else}}
+  <p><a href="/login">Войти</a> или <a href="/register">Зарегистрироваться</a></p>
+{{end}}
+
+<svg id="scheme" viewBox="0 0 400 300" width="800" height="600">
+  {{template "plots-inner" .}}
+</svg>
+
+
+</body>
+</html>
+
+{{define "plots-inner"}}
+  {{range .Plots}}
+    <g id="plot-{{.ID}}">
+      <polygon points="{{.SvgPoints}}"
+               class="status-{{.Status}}"
+               {{if eq .Status "available"}}
+                 hx-post="/plots/{{.ID}}/reserve"
+                 hx-target="#scheme"
+                 hx-swap="innerHTML"
+               {{end}} />
+      <text x="30" y="45">№{{.Number}}</text>
+    </g>
+  {{end}}
+{{end}}

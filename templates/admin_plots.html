@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Участки — админка</title>
+</head>
+<body>
+    <h1>Участки</h1>
+
+    <p><a href="/admin/plots/new">Добавить участок</a></p>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Номер</th>
+                <th>Площадь</th>
+                <th>Цена</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ range .Plots }}
+            <tr>
+                <td>{{ .ID }}</td>
+                <td>{{ .Number }}</td>
+                <td>{{ .Area }}</td>
+                <td>{{ .Price }}</td>
+                <td>{{ .Status }}</td>
+                <td><a href="/admin/plots/{{ .ID }}/edit">Редактировать</a></td>
+            </tr>
+            {{ else }}
+            <tr>
+                <td colspan="6">Участков пока нет</td>
+            </tr>
+            {{ end }}
+        </tbody>
+    </table>
+</body>
+</html>

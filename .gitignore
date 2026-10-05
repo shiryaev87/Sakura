@@ -1,0 +1,26 @@
+# Go
+/bin/
+/pkg/
+/vendor/
+*.exe
+*.test
+*.out
+
+# Mac OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Env/config
+.env
+.env.local
+
+# Бинарники, временные файлы
+*.log
+*.sqlite
+*.db
+
+# Postgres dumps и data
+postgres_data/
