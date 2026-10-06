@@ -24,6 +24,13 @@
       stroke: #333;
       stroke-width: 2;
       cursor: pointer;
+      transition: filter 160ms ease, stroke 160ms ease, stroke-width 160ms ease;
+    }
+
+    polygon:hover {
+      filter: brightness(1.08);
+      stroke: #111;
+      stroke-width: 3;
     }
 
     text {
@@ -84,7 +91,7 @@
 
 
     <div class="bg-white border rounded-3 p-3 shadow-sm">
-      <div id = "scheme-wrap">
+      <div id="scheme-wrap">
         {{template "scheme" .}}
       </div>
     </div>
@@ -94,17 +101,13 @@
 </html>
 
 {{define "scheme"}}
-<svg id ="scheme" viewBox="0 0 450 180" stule="width:100%; height:auto;display:block">
+<svg id="scheme" viewBox="0 0 450 180" stule="width:100%; height:auto;display:block">
   {{range .Plots}}
-    <g id="plot-{{.ID}}">
-      <polygon points ="{{.SvgPoints}}"
-                class="status-{{.Status}}"
-                {{if eq .Status "available"}}
-                  hx-post="/plots/{{.ID}}/reserve"
-                  hx-target="#scheme-wrap"
-                  hx-swap="innerHTML"
-                  {{end}} />
-    </g>"
-    {{end}}
+  <g id="plot-{{.ID}}">
+    <title> Участок №{{.Number}}:{{.Status}}. Площадь {{.Area}}. Цена {{.Price}} </title>
+    <polygon points="{{.SvgPoints}}" class="status-{{.Status}}" {{if eq .Status "available" }}
+      hx-post="/plots/{{.ID}}/reserve" hx-target="#scheme-wrap" hx-swap="innerHTML" {{end}} />
+  </g>"
+  {{end}}
 </svg>
 {{end}}
