@@ -1,41 +1,99 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Участки — админка</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Участки — админка Sakura</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
 </head>
-<body>
-    <h1>Участки</h1>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <p><a href="/admin/plots/new">Добавить участок</a></p>
+  <nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/admin/plots">Sakura Admin</a>
 
-    <table border="1" cellpadding="6" cellspacing="0">
-        <thead>
+      <div class="d-flex align-items-center gap-3">
+        <a class="link-light text-decoration-none" href="/">
+          На сайт
+        </a>
+        <a class="btn btn-outline-light btn-sm" href="/logout">
+          Выйти
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container flex-grow-1 py-5">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="h2 mb-1">Участки</h1>
+        <p class="mb-0 text-secondary">
+          Управление земельными участками.
+        </p>
+      </div>
+
+      <a class="btn btn-dark" href="/admin/plots/new">
+        Добавить участок
+      </a>
+    </div>
+
+    <div class="bg-white border rounded-3 shadow-sm overflow-hidden">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
             <tr>
-                <th>ID</th>
-                <th>Номер</th>
-                <th>Площадь</th>
-                <th>Цена</th>
-                <th>Статус</th>
-                <th>Действия</th>
+              <th scope="col">ID</th>
+              <th scope="col">Номер</th>
+              <th scope="col">Площадь</th>
+              <th scope="col">Цена</th>
+              <th scope="col">Статус</th>
+              <th scope="col" class="text-end">Действия</th>
             </tr>
-        </thead>
-        <tbody>
-            {{ range .Plots }}
-            <tr>
-                <td>{{ .ID }}</td>
-                <td>{{ .Number }}</td>
-                <td>{{ .Area }}</td>
-                <td>{{ .Price }}</td>
-                <td>{{ .Status }}</td>
-                <td><a href="/admin/plots/{{ .ID }}/edit">Редактировать</a></td>
-            </tr>
-            {{ else }}
-            <tr>
-                <td colspan="6">Участков пока нет</td>
-            </tr>
-            {{ end }}
-        </tbody>
-    </table>
+          </thead>
+
+          <tbody>
+            {{range .Plots}}
+              <tr>
+                <td class="text-secondary">{{.ID}}</td>
+                <td class="fw-semibold">№{{.Number}}</td>
+                <td>{{.Area}} соток</td>
+                <td>{{.Price}} руб.</td>
+                <td>
+                  {{if eq .Status "available"}}
+                    <span class="badge text-bg-success">Свободен</span>
+                  {{else if eq .Status "reserved"}}
+                    <span class="badge text-bg-warning">Забронирован</span>
+                  {{else if eq .Status "sold"}}
+                    <span class="badge text-bg-danger">Продан</span>
+                  {{else}}
+                    <span class="badge text-bg-secondary">{{.Status}}</span>
+                  {{end}}
+                </td>
+                <td class="text-end">
+                  <a
+                    class="btn btn-outline-secondary btn-sm"
+                    href="/admin/plots/{{.ID}}/edit"
+                  >
+                    Редактировать
+                  </a>
+                </td>
+              </tr>
+            {{else}}
+              <tr>
+                <td colspan="6" class="py-5 text-center text-secondary">
+                  Участков пока нет.
+                </td>
+              </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
 </body>
 </html>
