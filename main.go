@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -34,23 +35,34 @@ func main() {
 	}
 	defer db.Close()
 
+	// домашнаяя страница
 	http.HandleFunc("/", indexHandler)
+	//
 	http.HandleFunc("POST /plots/{id}/reserve", reserveHandler)
 
+	// страницы регистрации
 	http.HandleFunc("GET /register", registerPageHandler)
 	http.HandleFunc("POST /register", registerHandler)
 
+	// страницы  логина
 	http.HandleFunc("GET /login", loginPageHandler)
 	http.HandleFunc("POST /login", loginHandler)
 
+	// разлогиниться
 	http.HandleFunc("GET /logout", logoutHandler)
 
 	// Мои участки
 	http.HandleFunc("GET /dashboard", requireAuth(dashboardHandler))
 
+	// админская панель
 	http.HandleFunc("GET /admin/plots", requireAdmin(adminPlotsListHandler))
+
+	// страница создания нового участка
 	http.HandleFunc("GET /admin/plots/new", requireAdmin(adminPlotNewPageHandler))
+
 	http.HandleFunc("POST /admin/plots/new", requireAdmin(adminPlotCreateHandler))
+
+	// страница редактирования участка
 	http.HandleFunc("GET /admin/plots/{id}/edit", requireAdmin(adminPlotEditPageHandler))
 	http.HandleFunc("POST /admin/plots/{id}/edit", requireAdmin(adminPlotUpdateHandler))
 
@@ -343,7 +355,7 @@ func adminPlotCreateHandler(w http.ResponseWriter, r *http.Request) {
 	svgPoints := r.FormValue("svg_points")
 
 	_, err := db.Exec(context.Background(),
-		"Insert into plot (number, area,price,status,svg_points) VALUES($1, $2, $3, $4, $5)",
+		"Insert into plots (number, area,price,status,svg_points) VALUES($1, $2, $3, $4, $5)",
 		number, area, price, status, svgPoints)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
@@ -366,21 +378,25 @@ func adminPlotEditPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl := template.Must(template.ParseFiles("templates/admin_plot_form.html"))
-	tmpl.Execute(w, map[string]interface{}{"Plots": p})
+	tmpl.Execute(w, map[string]interface{}{"Plot": p})
 }
 
 // обновить участок
 
 func adminPlotUpdateHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("id")
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "Некорректный ID участок ", http.StatusBadRequest)
+		return
+	}
 	number := r.FormValue("number")
 	area := r.FormValue("area")
 	price := r.FormValue("price")
 	status := r.FormValue("status")
 	svgPoints := r.FormValue("svg_points")
 
-	_, err := db.Exec(context.Background(),
-		"Update plots sen number = $1, area = $2, price =$3, status = $4, svg_points =$5 where id = $6",
+	_, err = db.Exec(context.Background(),
+		"Update plots set number = $1, area = $2, price =$3, status = $4, svg_points =$5 where id = $6",
 		number, area, price, status, svgPoints, id)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
