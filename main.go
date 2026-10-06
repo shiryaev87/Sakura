@@ -131,7 +131,7 @@ func reserveHandler(w http.ResponseWriter, r *http.Request) {
 		plots = append(plots, p)
 	}
 	tmpl := template.Must(template.ParseFiles("templates/index.html"))
-	err = tmpl.ExecuteTemplate(w, "plots-inner", map[string]interface{}{"Plots": plots})
+	err = tmpl.ExecuteTemplate(w, "scheme", map[string]interface{}{"Plots": plots})
 	if err != nil {
 		log.Println("Ошибка рендеринга шаблона;", err)
 	}
